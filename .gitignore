@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Models
+*.pkl
+*.pth
+
+# IDE
+.code
+.idea

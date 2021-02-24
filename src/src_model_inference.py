@@ -1,15 +1,31 @@
 from fastai.text.all import *
-import urllib
+import boto3
+import os
+
+def get_s3_bucket(bucket, aws_file, l_file):
+    """
+    Pass AWS info to download file
+    :param bucket: name of S£ bucket
+    :param aws_file: path to bucket file
+    :param l_file: path to loccl file
+    :return: None
+    """
+    for f in os.listdir():
+        # Check if file in local dir
+        if l_file != f:
+            s3 = boto3.client(
+                's3',
+                'AKIA25JBL6HAGVZEYAFE',
+                '9ua37hKPEC36I2zMR4SLDZub1NNN50jYlflnSNwc'
+            )
+            s3.download_file(bucket, aws_file, l_file)
+
+
+l_file='text_classifier.pth'
+
+get_s3_bucket('jack-ml-models', 'models/text_classifier.pth', l_file)
 
 path = untar_data(URLs.IMDB)
-
-# Create language model DataLoaders
-# get_imdb = partial(get_text_files, folders=['train', 'test', 'unsup'])
-# dls_lm = DataBlock (
-#     blocks=TextBlock.from_folder(path, is_lm=True), # other option is .from_df
-#     get_items=get_imdb,
-#     splitter=RandomSplitter(0.1)
-# ).dataloaders(path, path=path, bs=128, seq_len=80)
 
 # Text classifier DataLoaders
 dls_clas = DataBlock(
@@ -23,24 +39,11 @@ dls_clas = DataBlock(
 l = text_classifier_learner(dls_clas, 
                             AWD_LSTM, 
                             drop_mult=0.5, 
-                            metrics=accuracy).to_fp16()
+                            metrics=accuracy)#.to_fp16()
 
-# Get S3 bucket
-# myfile = opener.open(myurl)
-
-# def get_s3_bucket(bucket_n):
-#     response = s3.list_objects_v2(Bucket=bucket_n )
-#     for content in response['Contents']:
-#         obj_dict = s3.get_object(Bucket=bucket_n, Key=content['Key'])
-#         contents = obj_dict['Body'].read().decode('utf-8')
-#     return obj_dict, content
-#     # opener = urllib.URLopener()
-#     # myurl = "s3://jack-ml-models/models/"
-
-# myfile = get_s3_bucket('')
 
 # Load trained model
-l = l.load('/content/gdrive/MyDrive/Colab Notebooks/FastAI/models/text_classifier')
+l = l.load(l_file)
 
 # predict
-l.predict(my_str)
+print(l.predict("That was such a good movie"))
