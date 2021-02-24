@@ -15,8 +15,8 @@ def get_s3_bucket(bucket, aws_file, l_file):
         if l_file != f:
             s3 = boto3.client(
                 's3',
-                'AKIA25JBL6HAGVZEYAFE',
-                '9ua37hKPEC36I2zMR4SLDZub1NNN50jYlflnSNwc'
+                'aws_access_key_id',
+                'aws_secret_access_key'
             )
             s3.download_file(bucket, aws_file, l_file)
 
